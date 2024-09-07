@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="bottom_margin_default">32dp</dimen>
+    <dimen name="poster_width">160dp</dimen>
+    <dimen name="poster_height">240dp</dimen>
+    <dimen name="poster_vertical_margin">5dp</dimen>
+    <dimen name="poster_corner_radius">20dp</dimen>
+    <dimen name="poster_elevation">10dp</dimen>
+    <dimen name="data_start_margin">85dp</dimen>
+    <dimen name="data_end_margin">5dp</dimen>
+    <dimen name="data_elevation">8dp</dimen>
+    <dimen name="heart_dimens">30dp</dimen>
+    <dimen name="heart_margin">6dp</dimen>
+    <dimen name="title_text_size">18sp</dimen>
+    <dimen name="data_text_size">11sp</dimen>
+</resources>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+<fragment
+    android:id="@+id/map"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/main_buttons"
+    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_findMyLocation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="me"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_above="@id/main_buttons"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:backgroundTint="@color/blue_800"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
+
+    <!-- Add garden Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_addGarden"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:text="add"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_above="@id/main_buttons"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:backgroundTint="@color/blue_800"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
+
+    <!-- Search Button-->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Search"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="@dimen/bottom_margin_default"
+        android:padding="16dp"
+        android:backgroundTint="@color/blue_800"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
+
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_buttons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        tools:ignore="MissingClass">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_IMG_saves"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/blue_800"
+            android:textAllCaps="true"
+            android:text="Saves"
+            android:textStyle="bold"
+            app:cornerRadius="0dp"
+            android:padding="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_IMG_filter"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/blue_800"
+            android:textAllCaps="true"
+            android:text="Filter"
+            android:textStyle="bold"
+            app:cornerRadius="0dp"
+            android:padding="16dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/main_IMG_list"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:backgroundTint="@color/blue_800"
+            android:textStyle="bold"
+            android:text="List"
+            android:textAllCaps="true"
+            app:cornerRadius="0dp"
+            android:padding="16dp"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+</RelativeLayout>

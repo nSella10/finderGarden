@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/garden_detail_image"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:scaleType="centerCrop"
+        android:layout_alignParentTop="true" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/garden_detail_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/garden_detail_image"
+        android:layout_marginTop="16dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:text="Garden Name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/garden_detail_facilities"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/garden_detail_name"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        android:text="Facilities" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/garden_detail_distance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/garden_detail_facilities"
+        android:layout_marginTop="8dp"
+        android:textSize="18sp"
+        android:text="Distance" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/garden_detail_description"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/garden_detail_distance"
+        android:layout_marginTop="8dp"
+        android:textSize="16sp"
+        android:text="Description" />
+
+    <androidx.appcompat.widget.AppCompatRatingBar
+        android:id="@+id/garden_detail_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/garden_detail_description"
+        android:numStars="5"
+        android:stepSize="0.5"
+        android:layout_marginTop="16dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/edit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit"
+        android:layout_below="@id/garden_detail_rating"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_below="@id/edit_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white" />
+
+
+</RelativeLayout>
+
