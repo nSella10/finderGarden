@@ -1,3 +1,4 @@
+
 package com.example.project.Data;
 
 import android.Manifest;
@@ -11,7 +12,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Toast;
 
@@ -36,13 +39,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.imageview.ShapeableImageView;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,6 +79,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
     private FacilitiesAdapter facilitiesAdapter;
     private List<String> facilitiesList = Arrays.asList("carrousel", "fitness facilities", "kiosk", "Benches", "slide", "swings", "fountain", "lawn", "facilities for 0-3", "facilities 4-8");
     private List<String> selectedFacilities = new ArrayList<>();
+    private ImageView transparentImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +95,8 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        setupTouchListenerForMap();
     }
 
     private void findViews() {
@@ -102,27 +108,46 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
         addGarden_BTN = findViewById(R.id.addGarden_BTN);
         recyclerFacilities = findViewById(R.id.addGarden_recycler_facilities);
         mainScrollView = findViewById(R.id.mainScrollView);
+        transparentImageView = findViewById(R.id.imagetrans);
     }
 
     private void initViews() {
         addPhoto_BTN_add.setOnClickListener(v -> checkCameraPermissionAndOpenCamera());
         addGarden_BTN.setOnClickListener(v -> saveGardenToFirebase());
 
-        // Initialize RecyclerView for facilities
         facilitiesAdapter = new FacilitiesAdapter(this, facilitiesList, selectedFacilities);
-        recyclerFacilities.setLayoutManager(new GridLayoutManager(this, 2));  // Set GridLayoutManager with 2 columns
+        recyclerFacilities.setLayoutManager(new GridLayoutManager(this, 2));  // Grid layout with 2 columns
         recyclerFacilities.setAdapter(facilitiesAdapter);
     }
 
-
-
-
     @SuppressLint("ClickableViewAccessibility")
+    private void setupTouchListenerForMap() {
+        transparentImageView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        // Disable scrolling of ScrollView when the map is touched
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    case MotionEvent.ACTION_UP:
+                        // Re-enable scrolling after interaction with the map
+                        mainScrollView.requestDisallowInterceptTouchEvent(false);
+                        return true;
+                    case MotionEvent.ACTION_MOVE:
+                        mainScrollView.requestDisallowInterceptTouchEvent(true);
+                        return false;
+                    default:
+                        return true;
+                }
+            }
+        });
+    }
+
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Set a default location (optional)
         LatLng defaultLocation = new LatLng(31.776, 35.234);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 12));
 
@@ -133,21 +158,6 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
         });
 
         getLastLocation();
-
-        // Handling map gestures within the ScrollView
-        mainScrollView.setOnTouchListener((v, event) -> {
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    // Disallow ScrollView to intercept touch events.
-                    v.getParent().requestDisallowInterceptTouchEvent(true);
-                    break;
-                case MotionEvent.ACTION_UP:
-                    // Allow ScrollView to intercept touch events.
-                    v.getParent().requestDisallowInterceptTouchEvent(false);
-                    break;
-            }
-            return false;
-        });
     }
 
     private void getLastLocation() {

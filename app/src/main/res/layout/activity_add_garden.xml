@@ -36,7 +36,15 @@
                 android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+
+            <!-- Transparent ImageView to intercept touch events -->
+            <ImageView
+                android:id="@+id/imagetrans"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@android:color/transparent" />
         </FrameLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/addGarden_recycler_facilities"

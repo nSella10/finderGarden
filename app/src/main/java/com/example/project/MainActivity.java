@@ -9,11 +9,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.widget.Toast;
 
 import com.example.project.Data.AddGardenActivity;
-import com.example.project.Data.DataManager;
 import com.example.project.Data.SavesActivity;
 import com.example.project.Managment.Garden;
 import com.example.project.Data.ListActivity;
@@ -284,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         main_BTN_addGarden.setOnClickListener(v -> {
             // Navigate to AddGardenActivity to add a new garden
-            Intent intent = new Intent(this, AddGardenActivity.class);
+            Intent intent = new Intent(MainActivity.this, AddGardenActivity.class);
             startActivity(intent);
         });
 
