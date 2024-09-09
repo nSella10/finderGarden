@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter by Distance (km)"
+            android:textSize="18sp" />
+
+        <SeekBar
+            android:id="@+id/distance_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100" />
+
+        <TextView
+            android:id="@+id/distance_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance: 10 km"
+            android:paddingTop="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filter by Rating"
+            android:textSize="18sp" />
+
+        <SeekBar
+            android:id="@+id/rating_seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="5" />
+
+        <TextView
+            android:id="@+id/rating_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rating: 3"
+            android:paddingTop="8dp" />
+
+        <!-- Checkbox for Garden Features -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Features"
+            android:textSize="18sp"
+            android:paddingTop="16dp" />
+
+        <CheckBox
+            android:id="@+id/check_benches"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="benches" />
+
+        <CheckBox
+            android:id="@+id/check_kiosk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="kiosk" />
+
+        <CheckBox
+            android:id="@+id/check_fitnessFacilities"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fitness facilities" />
+
+        <CheckBox
+            android:id="@+id/check_carrousel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="carrousel" />
+
+
+        <CheckBox
+            android:id="@+id/check_slide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="slide" />
+        <CheckBox
+            android:id="@+id/check_swings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="swings" />
+
+        <CheckBox
+            android:id="@+id/check_fountain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="fountain" />
+        <CheckBox
+            android:id="@+id/check_lawn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="lawn" />
+        <CheckBox
+            android:id="@+id/check_facilities_0_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="facilities for 0-3" />
+
+        <CheckBox
+            android:id="@+id/check_facilities_4_8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="facilities 4-8" />
+
+
+
+
+        <Button
+            android:id="@+id/apply_filter_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Apply" />
+
+    </LinearLayout>
+</ScrollView>

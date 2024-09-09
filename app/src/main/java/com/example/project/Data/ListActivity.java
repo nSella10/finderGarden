@@ -1,5 +1,6 @@
 package com.example.project.Data;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -28,6 +29,9 @@ public class ListActivity extends AppCompatActivity {
 
     private GardenAdapter gardenAdapter;
     private List<Garden> gardenList;
+    //ading
+    private FusedLocationProviderClient fusedLocationClient;
+    private double userLatitude, userLongitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +51,8 @@ public class ListActivity extends AppCompatActivity {
                 intent.putExtra("garden_id", garden.getId());
                 intent.putExtra("garden_name", garden.getName());
                 intent.putExtra("garden_description", garden.getDescription());
-                intent.putExtra("garden_distance", garden.getLatitude() + ", " + garden.getLongitude());
+                String distance = gardenAdapter.calculateDistance(garden.getLatitude(), garden.getLongitude());
+                intent.putExtra("garden_distance", distance);
                 intent.putExtra("garden_image_url", garden.getImageUrl());
                 intent.putExtra("garden_rating",(float) garden.getRating());
                 List<String> facilities = garden.getFacilities();
@@ -72,10 +77,30 @@ public class ListActivity extends AppCompatActivity {
 
         recyclerView.setAdapter(gardenAdapter);
 
+        //***
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        getUserLocation();
+
         loadDataFromFirebase();
     }
+//**
+    private void getUserLocation() {
+            if (ContextCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+                    if (location != null) {
+                        userLatitude = location.getLatitude();
+                        userLongitude = location.getLongitude();
+                        gardenAdapter.setUserLocation(userLatitude, userLongitude);  // Pass the location to the adapter
+                    }
+                });
+            } else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+        }
 
-    private void updateGardenFavoriteStatusInDatabase(Garden garden) {
+
+    private void updateGardenFavoriteStatusInDatabase(@NonNull Garden garden) {
         DatabaseReference gardenRef = FirebaseDatabase.getInstance().getReference("Garden").child(garden.getId());
         gardenRef.child("favorite").setValue(garden.isFavorite());
     }
@@ -85,6 +110,7 @@ public class ListActivity extends AppCompatActivity {
         DatabaseReference gardenRef = database.getReference("Garden");
 
         gardenRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 gardenList.clear();

@@ -77,7 +77,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
 
     private RecyclerView recyclerFacilities;
     private FacilitiesAdapter facilitiesAdapter;
-    private List<String> facilitiesList = Arrays.asList("carrousel", "fitness facilities", "kiosk", "Benches", "slide", "swings", "fountain", "lawn", "facilities for 0-3", "facilities 4-8");
+    private List<String> facilitiesList = Arrays.asList("carrousel", "fitness facilities", "kiosk", "benches", "slide", "swings", "fountain", "lawn", "facilities for 0-3", "facilities 4-8");
     private List<String> selectedFacilities = new ArrayList<>();
     private ImageView transparentImageView;
 

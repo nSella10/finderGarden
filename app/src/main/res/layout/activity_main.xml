@@ -7,18 +7,20 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<fragment
-    android:id="@+id/map"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_above="@id/main_buttons"
-    android:name="com.google.android.gms.maps.SupportMapFragment"/>
+    <!-- Map fragment -->
+    <fragment
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/main_buttons"
+        android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
+    <!-- Find my location button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/main_BTN_findMyLocation"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="me"
+        android:text="Me"
         android:layout_alignParentStart="true"
         android:layout_marginStart="16dp"
         android:layout_above="@id/main_buttons"
@@ -29,12 +31,12 @@
         android:textAllCaps="true"
         android:textStyle="bold" />
 
-    <!-- Add garden Button -->
+    <!-- Add garden button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/main_BTN_addGarden"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:text="add"
+        android:text="Add"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="16dp"
         android:layout_above="@id/main_buttons"
@@ -45,31 +47,69 @@
         android:textAllCaps="true"
         android:textStyle="bold" />
 
-    <!-- Search Button-->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/main_BTN_search"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Search"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="@dimen/bottom_margin_default"
-        android:padding="16dp"
-        android:backgroundTint="@color/blue_800"
-        android:textColor="@android:color/white"
-        android:textAllCaps="true"
-        android:textStyle="bold" />
+        android:layout_margin="16dp"
+        android:hint="Search for a garden"
+        app:boxBackgroundMode="outline"
+        app:boxStrokeWidth="4dp"
+        app:boxStrokeColor="@color/blue_800"
+        app:boxBackgroundColor="@color/white">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/main_SEARCH_garden"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:padding="10dp"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColorHint="@color/black"
+            android:textColor="@color/black"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
+<!--    <com.google.android.material.textfield.TextInputLayout-->
+<!--        android:id="@+id/search_layout"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:hint="Search for a garden"-->
+<!--        android:textColorHint="@color/black"-->
+<!--        app:boxBackgroundMode="outline"-->
+<!--        app:boxStrokeWidth="4dp"-->
+<!--        app:boxStrokeColor="@color/blue_800"-->
+<!--        app:boxBackgroundColor="@color/white">-->
+
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/main_SEARCH_garden"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:inputType="text"-->
+<!--            android:padding="10dp"-->
+<!--            android:textSize="18sp"-->
+<!--            android:textStyle="bold"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:textColorHint="@color/black"-->
+<!--            android:background="@color/white"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:drawablePadding="10dp"-->
+<!--            android:gravity="center_vertical" />-->
+<!--    </com.google.android.material.textfield.TextInputLayout>-->
+
+
+    <!-- Bottom buttons -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/main_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        tools:ignore="MissingClass">
+        android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/main_IMG_saves"
@@ -77,10 +117,9 @@
             android:layout_height="80dp"
             android:layout_weight="1"
             android:backgroundTint="@color/blue_800"
-            android:textAllCaps="true"
             android:text="Saves"
             android:textStyle="bold"
-            app:cornerRadius="0dp"
+            android:textAllCaps="true"
             android:padding="16dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -89,10 +128,9 @@
             android:layout_height="80dp"
             android:layout_weight="1"
             android:backgroundTint="@color/blue_800"
-            android:textAllCaps="true"
             android:text="Filter"
             android:textStyle="bold"
-            app:cornerRadius="0dp"
+            android:textAllCaps="true"
             android:padding="16dp"/>
 
         <com.google.android.material.button.MaterialButton
@@ -101,13 +139,13 @@
             android:layout_height="80dp"
             android:layout_weight="1"
             android:backgroundTint="@color/blue_800"
-            android:textStyle="bold"
             android:text="List"
+            android:textStyle="bold"
             android:textAllCaps="true"
-            app:cornerRadius="0dp"
             android:padding="16dp"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
 </RelativeLayout>
+
+

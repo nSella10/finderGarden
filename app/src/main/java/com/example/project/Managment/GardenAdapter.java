@@ -1,5 +1,7 @@
 package com.example.project.Managment;
 
+import android.annotation.SuppressLint;
+import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +14,13 @@ import com.example.project.interfaces.GardenCallback;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textview.MaterialTextView;
 import java.util.List;
+import java.util.Locale;
 
 public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenViewHolder> {
 
     private List<Garden> gardenList;
     private GardenCallback gardenCallback;
+    private double userLatitude, userLongitude;
 
 
 
@@ -28,6 +32,13 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
         this.gardenCallback = gardenCallback;
     }
 
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setUserLocation(double userLatitude, double userLongitude) {
+        this.userLatitude = userLatitude;
+        this.userLongitude = userLongitude;
+        notifyDataSetChanged();  // Update the list with distances
+    }
     @NonNull
     @Override
     public GardenViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -35,13 +46,21 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
                 .inflate(R.layout.item_garden, parent, false);
         return new GardenViewHolder(view);
     }
+    
 
-    @Override
+    @SuppressLint("SetTextI18n")
     public void onBindViewHolder(@NonNull GardenViewHolder holder, int position) {
         Garden garden = gardenList.get(position);
 
         holder.gardenName.setText(garden.getName());
-        holder.gardenDistance.setText("Lat: " + garden.getLatitude() + ", Lon: " + garden.getLongitude());
+
+        double gardenLatitude = garden.getLatitude();
+        double gardenLongitude = garden.getLongitude();
+
+        // Calculate the distance and display it
+        String distance = calculateDistance(gardenLatitude, gardenLongitude);
+        holder.gardenDistance.setText("Distance: " + distance);
+
         holder.gardenRatingBar.setRating((float) garden.getRating());
 
         // Load the garden image using Glide
@@ -67,10 +86,20 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
         });
     }
 
+    public String calculateDistance(double gardenLatitude, double gardenLongitude) {
+        float[] results = new float[1];
+        Location.distanceBetween(userLatitude, userLongitude, gardenLatitude, gardenLongitude, results);
+        float distanceInMeters = results[0];
+        float distanceInKm = distanceInMeters / 1000;
+        return String.format(Locale.getDefault(), "%.2f km", distanceInKm);
+    }
+
+
     @Override
     public int getItemCount() {
         return gardenList == null ? 0 : gardenList.size();
     }
+
 
     public class GardenViewHolder extends RecyclerView.ViewHolder {
         public MaterialTextView gardenName;
