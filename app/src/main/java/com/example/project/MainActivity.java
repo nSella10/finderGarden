@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +31,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.button.MaterialButton;
@@ -99,7 +104,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         if (garden != null) {
                             gardenList.add(garden);
                             LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
-                            mMap.addMarker(new MarkerOptions().position(gardenLocation).title(garden.getName()));
+
+                            mMap.addMarker(new MarkerOptions()
+                                    .position(gardenLocation)
+                                    .title(garden.getName())
+                                    .icon(BitmapFromVector
+                                            (getApplicationContext(), R.drawable.pin)));
 
                             if (firstGardenLocation == null) {
                                 firstGardenLocation = gardenLocation;
@@ -120,6 +130,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
     }
+
+    private BitmapDescriptor
+    BitmapFromVector(Context context, int vectorResId)
+    {
+        // below line is use to generate a drawable.
+        Drawable vectorDrawable = ContextCompat.getDrawable(
+                context, vectorResId);
+
+        // below line is use to set bounds to our vector
+        // drawable.
+        vectorDrawable.setBounds(
+                0, 0, vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight());
+
+        // below line is use to create a bitmap for our
+        // drawable which we have added.
+        Bitmap bitmap = Bitmap.createBitmap(
+                vectorDrawable.getIntrinsicWidth(),
+                vectorDrawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        // below line is use to add bitmap in our canvas.
+        Canvas canvas = new Canvas(bitmap);
+
+        // below line is use to draw our
+        // vector drawable in canvas.
+        vectorDrawable.draw(canvas);
+
+        // after generating our bitmap we are returning our
+        // bitmap.
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
+    }
+
+//    private BitmapDescriptor BitmapFromVector(Context applicationContext, int pin) {
+//    }
+
 
     private void initView() {
         main_SEARCH_garden.setOnClickListener(v -> {
@@ -169,7 +215,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Move the camera to the selected garden
                 LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(gardenLocation, 15));
-                mMap.addMarker(new MarkerOptions().position(gardenLocation).title(garden.getName()));
+                mMap.addMarker(new MarkerOptions()
+                        .position(gardenLocation).
+                        title(garden.getName())
+                        .icon(BitmapFromVector
+                                (getApplicationContext(), R.drawable.pin)));
 
                 Toast.makeText(MainActivity.this, "Found: " + garden.getName(), Toast.LENGTH_SHORT).show();
 
@@ -289,7 +339,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             for (Garden garden : filteredGardens) {
                 LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(gardenLocation).title(garden.getName()));
+                mMap.addMarker(new MarkerOptions()
+                        .position(gardenLocation)
+                        .title(garden.getName())
+                        .icon(BitmapFromVector(getApplicationContext(), R.drawable.pin)));
             }
 
             if (!filteredGardens.isEmpty()) {
@@ -298,145 +351,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         }
     }
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (requestCode == FILTER_REQUEST_CODE && resultCode == RESULT_OK) {
-//            int selectedDistance = data.getIntExtra("distance", 10);  // Default distance
-//            int selectedRating = data.getIntExtra("rating", 3);       // Default rating
-//            boolean hasBenches = data.getBooleanExtra("benches", false);
-//            boolean hasKiosk = data.getBooleanExtra("kiosk", false);
-//            boolean hasFitnessFacilities = data.getBooleanExtra("fitnessFacilities", false);
-//            boolean hasCarrousel = data.getBooleanExtra("carrousel", false);
-//            boolean hasSlide = data.getBooleanExtra("slide", false);
-//            boolean hasSwings = data.getBooleanExtra("swings", false);
-//            boolean hasFountain = data.getBooleanExtra("fountain", false);
-//            boolean hasLawn = data.getBooleanExtra("lawn", false);
-//            boolean hasFacilities0To3 = data.getBooleanExtra("facilities_0_3", false);
-//            boolean hasFacilities4To8 = data.getBooleanExtra("facilities_4_8", false);
-//
-//            applyFilters(selectedDistance, selectedRating, hasBenches, hasKiosk, hasFitnessFacilities, hasCarrousel, hasSlide, hasSwings, hasFountain, hasLawn, hasFacilities0To3, hasFacilities4To8);
-//        }
-//    }
-//
-//    private void applyFilters(int distance, int rating, boolean hasBenches, boolean hasKiosk, boolean hasFitnessFacilities,
-//                              boolean hasCarrousel, boolean hasSlide, boolean hasSwings, boolean hasFountain,
-//                              boolean hasLawn, boolean hasFacilities0To3, boolean hasFacilities4To8) {
-//
-//        List<Garden> filteredGardens = new ArrayList<>();
-//
-//        Log.d("FilterDebug", "Starting filter process...");
-//
-//        for (Garden garden : gardenList) {
-//            // Step 1: Calculate the distance between the user and the garden
-//            double gardenDistance = calculateDistance(garden.getLatitude(), garden.getLongitude());
-//
-//            // Step 2: Check if the garden matches the distance and rating filters
-//            if (gardenDistance <= distance && garden.getRating() >= rating) {
-//                List<String> facilities = garden.getFacilities() != null ? garden.getFacilities() : new ArrayList<>();
-//
-//                // Step 3: Check if at least one selected facility matches the garden's facilities
-//                boolean matchFacilities = true; // Set to true by default, change based on selected filters
-//
-//                if (hasBenches && !facilities.contains("benches")) matchFacilities = false;
-//                if (hasKiosk && !facilities.contains("kiosk")) matchFacilities = false;
-//                if (hasFitnessFacilities && !facilities.contains("fitness facilities")) matchFacilities = false;
-//                if (hasCarrousel && !facilities.contains("carrousel")) matchFacilities = false;
-//                if (hasSlide && !facilities.contains("slide")) matchFacilities = false;
-//                if (hasSwings && !facilities.contains("swings")) matchFacilities = false;
-//                if (hasFountain && !facilities.contains("fountain")) matchFacilities = false;
-//                if (hasLawn && !facilities.contains("lawn")) matchFacilities = false;
-//                if (hasFacilities0To3 && !facilities.contains("facilities for 0-3")) matchFacilities = false;
-//                if (hasFacilities4To8 && !facilities.contains("facilities for 4-8")) matchFacilities = false;
-//
-//                // Step 4: Add the garden to the filtered list if it matches the criteria
-//                if (matchFacilities) {
-//                    filteredGardens.add(garden);
-//                    Log.d("FilterDebug", "Added garden: " + garden.getName());
-//                } else {
-//                    Log.d("FilterDebug", "Garden " + garden.getName() + " does not match selected facilities.");
-//                }
-//            }
-//        }
-//
-//        Log.d("FilterDebug", "Total gardens after filter: " + filteredGardens.size());
-//
-//        // Update the map with the filtered gardens
-//        updateMapWithFilteredGardens(filteredGardens);
-//    }
-//
-//
-////    private void applyFilters(int distance, int rating, boolean hasBenches, boolean hasKiosk, boolean hasFitnessFacilities,
-////                              boolean hasCarrousel, boolean hasSlide, boolean hasSwings, boolean hasFountain,
-////                              boolean hasLawn, boolean hasFacilities0To3, boolean hasFacilities4To8) {
-////
-////        List<Garden> filteredGardens = new ArrayList<>();
-////
-////        Log.d("FilterDebug", "Starting filter process...");
-////
-////        for (Garden garden : gardenList) {
-////            double gardenDistance = calculateDistance(garden.getLatitude(), garden.getLongitude());
-////
-////            if (gardenDistance <= distance && garden.getRating() >= rating) {
-////                List<String> facilities = garden.getFacilities() != null ? garden.getFacilities() : new ArrayList<>();
-////
-////                boolean matchFacilities = false;
-////
-////                List<String> selectedFacilities = new ArrayList<>();
-////                if (hasBenches) selectedFacilities.add("benches");
-////                if (hasKiosk) selectedFacilities.add("kiosk");
-////                if (hasFitnessFacilities) selectedFacilities.add("fitness facilities");
-////                if (hasCarrousel) selectedFacilities.add("carrousel");
-////                if (hasSlide) selectedFacilities.add("slide");
-////                if (hasSwings) selectedFacilities.add("swings");
-////                if (hasFountain) selectedFacilities.add("fountain");
-////                if (hasLawn) selectedFacilities.add("lawn");
-////                if (hasFacilities0To3) selectedFacilities.add("facilities for 0-3");
-////                if (hasFacilities4To8) selectedFacilities.add("facilities for 4-8");
-////
-////                for (String facility : selectedFacilities) {
-////                    if (facilities.contains(facility)) {
-////                        matchFacilities = true;
-////                        Log.d("FilterDebug", "Facility match found: " + facility + " in " + garden.getName());
-////                        break;
-////                    }
-////                }
-////
-////                if (matchFacilities || selectedFacilities.isEmpty()) {
-////                    filteredGardens.add(garden);
-////                    Log.d("FilterDebug", "Added garden: " + garden.getName());
-////                } else {
-////                    Log.d("FilterDebug", "Garden " + garden.getName() + " does not match any selected facilities.");
-////                }
-////            }
-////        }
-////
-////        Log.d("FilterDebug", "Total gardens after filter: " + filteredGardens.size());
-////
-////        updateMapWithFilteredGardens(filteredGardens);
-////    }
-//
-//    private double calculateDistance(double gardenLatitude, double gardenLongitude) {
-//        float[] results = new float[1];
-//        Location.distanceBetween(latitude, longitude, gardenLatitude, gardenLongitude, results);  // Uses user’s latitude and longitude
-//        return results[0] / 1000;  // Return distance in kilometers
-//    }
-//
-//    private void updateMapWithFilteredGardens(List<Garden> filteredGardens) {
-//        if (mMap != null) {
-//            mMap.clear();
-//
-//            for (Garden garden : filteredGardens) {
-//                LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
-//                mMap.addMarker(new MarkerOptions().position(gardenLocation).title(garden.getName()));
-//            }
-//
-//            if (!filteredGardens.isEmpty()) {
-//                LatLng firstLocation = new LatLng(filteredGardens.get(0).getLatitude(), filteredGardens.get(0).getLongitude());
-//                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 12));
-//            }
-//        }
-//    }
 
     private void findViews() {
         main_BTN_addGarden = findViewById(R.id.main_BTN_addGarden);

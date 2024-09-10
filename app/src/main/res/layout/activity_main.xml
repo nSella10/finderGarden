@@ -7,52 +7,29 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <include
+        android:id="@+id/header"
+        layout="@layout/header_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true" />
+
     <!-- Map fragment -->
     <fragment
         android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/main_buttons"
+        android:layout_below="@id/header"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
-
-    <!-- Find my location button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/main_BTN_findMyLocation"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="Me"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_above="@id/main_buttons"
-        android:layout_marginBottom="16dp"
-        android:padding="16dp"
-        android:backgroundTint="@color/blue_800"
-        android:textColor="@android:color/white"
-        android:textAllCaps="true"
-        android:textStyle="bold" />
-
-    <!-- Add garden button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/main_BTN_addGarden"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:text="Add"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_above="@id/main_buttons"
-        android:layout_marginBottom="16dp"
-        android:padding="16dp"
-        android:backgroundTint="@color/blue_800"
-        android:textColor="@android:color/white"
-        android:textAllCaps="true"
-        android:textStyle="bold" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/search_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="16dp"
+        android:layout_below="@id/header"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
         android:hint="Search for a garden"
         app:boxBackgroundMode="outline"
         app:boxStrokeWidth="4dp"
@@ -71,35 +48,37 @@
             android:textColor="@color/black"/>
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Find my location button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_findMyLocation"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:icon="@drawable/my_location"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"
+        android:layout_above="@id/main_buttons"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:backgroundTint="@color/purple_100"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
 
-<!--    <com.google.android.material.textfield.TextInputLayout-->
-<!--        android:id="@+id/search_layout"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_alignParentTop="true"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:hint="Search for a garden"-->
-<!--        android:textColorHint="@color/black"-->
-<!--        app:boxBackgroundMode="outline"-->
-<!--        app:boxStrokeWidth="4dp"-->
-<!--        app:boxStrokeColor="@color/blue_800"-->
-<!--        app:boxBackgroundColor="@color/white">-->
+    <!-- Add garden button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/main_BTN_addGarden"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:icon="@drawable/add_garden"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp"
+        android:layout_above="@id/main_buttons"
+        android:layout_marginBottom="16dp"
+        android:padding="16dp"
+        android:backgroundTint="@color/purple_100"
+        android:textColor="@android:color/white"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
 
-<!--        <com.google.android.material.textfield.TextInputEditText-->
-<!--            android:id="@+id/main_SEARCH_garden"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:inputType="text"-->
-<!--            android:padding="10dp"-->
-<!--            android:textSize="18sp"-->
-<!--            android:textStyle="bold"-->
-<!--            android:backgroundTint="@color/white"-->
-<!--            android:textColorHint="@color/black"-->
-<!--            android:background="@color/white"-->
-<!--            android:textColor="@color/black"-->
-<!--            android:drawablePadding="10dp"-->
-<!--            android:gravity="center_vertical" />-->
-<!--    </com.google.android.material.textfield.TextInputLayout>-->
 
 
     <!-- Bottom buttons -->
@@ -120,7 +99,8 @@
             android:text="Saves"
             android:textStyle="bold"
             android:textAllCaps="true"
-            android:padding="16dp"/>
+            android:padding="16dp"
+            app:shapeAppearanceOverlay="@style/RectangleShape"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/main_IMG_filter"
@@ -131,7 +111,8 @@
             android:text="Filter"
             android:textStyle="bold"
             android:textAllCaps="true"
-            android:padding="16dp"/>
+            android:padding="16dp"
+            app:shapeAppearanceOverlay="@style/RectangleShape"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/main_IMG_list"
@@ -142,7 +123,8 @@
             android:text="List"
             android:textStyle="bold"
             android:textAllCaps="true"
-            android:padding="16dp"/>
+            android:padding="16dp"
+            app:shapeAppearanceOverlay="@style/RectangleShape"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
