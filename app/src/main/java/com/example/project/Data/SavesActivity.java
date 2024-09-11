@@ -1,24 +1,21 @@
 package com.example.project.Data;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.project.Managment.Garden;
-import com.example.project.Managment.GardenAdapter;
+import com.example.project.Management.Garden;
+import com.example.project.Management.GardenAdapter;
 import com.example.project.R;
+import com.example.project.interfaces.GardenCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.database.DataSnapshot;
@@ -49,12 +46,35 @@ public class SavesActivity extends AppCompatActivity {
         gardenAdapter = new GardenAdapter(favoriteGardenList);
         recyclerView.setAdapter(gardenAdapter);
 
+        gardenAdapter.setGardenCallback(new GardenCallback() {
+                                            @Override
+                                            public void onGardenClick(Garden garden) {
+                                            //pass
+                                            }
+
+                                            @Override
+                                            public void favoriteButtonClicked(Garden garden, int position) {
+                                                garden.setFavorite(!garden.isFavorite());
+
+                                                // Update the favorite status in Firebase
+                                                updateFavoriteStatusInFirebase(garden);
+
+                                                // Notify the adapter that the item has changed
+                                                gardenAdapter.notifyItemChanged(position);
+                                            }
+                                        });
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         getUserLocation();
 
         loadFavoriteGardenFromFirebase();
 
 
+    }
+
+    private void updateFavoriteStatusInFirebase(Garden garden) {
+            DatabaseReference gardenRef = FirebaseDatabase.getInstance().getReference("Garden").child(garden.getId());
+            gardenRef.child("favorite").setValue(garden.isFavorite());
     }
 
     private void getUserLocation() {
@@ -75,6 +95,7 @@ public class SavesActivity extends AppCompatActivity {
         DatabaseReference gardenRef = FirebaseDatabase.getInstance().getReference("Garden");
 
         gardenRef.addValueEventListener(new ValueEventListener() {
+            @SuppressLint("NotifyDataSetChanged")
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 favoriteGardenList.clear();

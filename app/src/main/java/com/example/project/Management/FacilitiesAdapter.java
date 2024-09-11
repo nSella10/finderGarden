@@ -1,4 +1,4 @@
-package com.example.project.Managment;
+package com.example.project.Management;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,14 +15,14 @@ import java.util.List;
 
 public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.FacilityViewHolder> {
 
-    private final List<String> facilityList;
-    private final List<String> selectedFacilities;
+    private final List<String> FACILITIES_LIST;
+    private final List<String> SELECTED_FACILITIES;
     private final Context context;
 
     public FacilitiesAdapter(Context context, List<String> facilityList, List<String> selectedFacilities) {
         this.context = context;
-        this.facilityList = facilityList;
-        this.selectedFacilities = selectedFacilities;
+        this.FACILITIES_LIST = facilityList;
+        this.SELECTED_FACILITIES = selectedFacilities;
     }
 
     @NonNull
@@ -34,21 +34,21 @@ public class FacilitiesAdapter extends RecyclerView.Adapter<FacilitiesAdapter.Fa
 
     @Override
     public void onBindViewHolder(@NonNull FacilityViewHolder holder, int position) {
-        String facility = facilityList.get(position);
+        String facility = FACILITIES_LIST.get(position);
         holder.chip.setText(facility);
 
         holder.chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                selectedFacilities.add(facility);
+                SELECTED_FACILITIES.add(facility);
             } else {
-                selectedFacilities.remove(facility);
+                SELECTED_FACILITIES.remove(facility);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return facilityList.size();
+        return FACILITIES_LIST.size();
     }
 
     public static class FacilityViewHolder extends RecyclerView.ViewHolder {

@@ -1,6 +1,7 @@
 
 package com.example.project.Data;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;
@@ -24,6 +25,50 @@ public class FilterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_filter);
 
+        findViews();
+        initViews();
+
+        // Set default values
+        distanceSeekBar.setProgress(10);
+        ratingSeekBar.setProgress(3);
+
+        // Update the text values when the seekbars change
+        distanceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                distanceValue.setText("Distance: " + progress + " km");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+        ratingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                ratingValue.setText("Rating: " + progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
+
+
+    }
+
+    private void initViews() {
+        applyFilterButton.setOnClickListener(v -> applyFilters());
+    }
+
+    private void findViews() {
         distanceSeekBar = findViewById(R.id.distance_seekbar);
         ratingSeekBar = findViewById(R.id.rating_seekbar);
         distanceValue = findViewById(R.id.distance_value);
@@ -39,42 +84,7 @@ public class FilterActivity extends AppCompatActivity {
         check_lawn = findViewById(R.id.check_lawn);
         check_facilities_0_3 = findViewById(R.id.check_facilities_0_3);
         check_facilities_4_8 = findViewById(R.id.check_facilities_4_8);
-
-        applyFilterButton = findViewById(R.id.apply_filter_button);
-
-        // Set default values
-        distanceSeekBar.setProgress(10);
-        ratingSeekBar.setProgress(3);
-
-        // Update the text values when the seekbars change
-        distanceSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                distanceValue.setText("Distance: " + progress + " km");
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        ratingSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                ratingValue.setText("Rating: " + progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {}
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {}
-        });
-
-        // Handle Apply button click
-        applyFilterButton.setOnClickListener(v -> applyFilters());
+         applyFilterButton = findViewById(R.id.apply_filter_button);
     }
 
     private void applyFilters() {

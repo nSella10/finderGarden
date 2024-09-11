@@ -1,4 +1,6 @@
-package com.example.project.Managment;
+package com.example.project.Management;
+
+import androidx.annotation.NonNull;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ public class Garden {
     private String description;
     private List<String> facilities;
     private boolean isFavorite = false ;
+    private double distanceFromUser;  // Add this field
+
 
 
     public Garden() {
@@ -49,54 +53,42 @@ public class Garden {
         return latitude;
     }
 
-    public Garden setLatitude(double latitude) {
-        this.latitude = latitude;
-        return this;
-    }
 
     public double getLongitude() {
         return longitude;
     }
 
-    public Garden setLongitude(double longitude) {
-        this.longitude = longitude;
-        return this;
-    }
+
 
     public double getRating() {
         return rating;
     }
 
-    public Garden setRating(double rating) {
-        this.rating = rating;
-        return this;
-    }
+
 
     public String getImageUrl() {
         return imageUrl;
     }
 
-    public Garden setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-        return this;
-    }
+
 
     public String getDescription() {
         return description;
     }
 
-    public Garden setDescription(String description) {
-        this.description = description;
-        return this;
-    }
+
 
     public List<String> getFacilities() {
         return facilities;
     }
 
-    public Garden setFacilities(List<String> facilities) {
-        this.facilities = facilities;
-        return this;
+
+    public double getDistanceFromUser() {
+        return distanceFromUser;
+    }
+
+    public void setDistanceFromUser(double distanceFromUser) {
+        this.distanceFromUser = distanceFromUser;
     }
 
     public boolean isFavorite() {
@@ -107,6 +99,7 @@ public class Garden {
         isFavorite = favorite;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Garden{" +

@@ -86,6 +86,10 @@ dependencies {
     implementation (libs.play.services.maps.v1802)
     implementation (libs.play.services.location.v2101)
 
+    //lottie
+        implementation (libs.lottie)
+
+
 
 
 }

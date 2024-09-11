@@ -1,6 +1,7 @@
 
-package com.example.project.Managment;
+package com.example.project.Management;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -8,7 +9,7 @@ import android.widget.ScrollView;
 
 public class CustomScrollView extends ScrollView {
 
-    private boolean enableScrolling = true; // Default scrolling enabled
+    private final boolean ENABLE_SCROLLING = true; // Default scrolling enabled
 
     public CustomScrollView(Context context) {
         super(context);
@@ -25,16 +26,15 @@ public class CustomScrollView extends ScrollView {
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         // Disable ScrollView's interception if scrolling is disabled
-        return enableScrolling && super.onInterceptTouchEvent(ev);
+        return ENABLE_SCROLLING && super.onInterceptTouchEvent(ev);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         // Disable ScrollView's touch events if scrolling is disabled
-        return enableScrolling && super.onTouchEvent(ev);
+        return ENABLE_SCROLLING && super.onTouchEvent(ev);
     }
 
-    public void setEnableScrolling(boolean enableScrolling) {
-        this.enableScrolling = enableScrolling;
-    }
+
 }

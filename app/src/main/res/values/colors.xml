@@ -9,4 +9,9 @@
     <color name="yellow_400">#FFEE58</color>
     <color name="orange_400">#FFA726</color>
     <color name="purple_100">#E1BEE7</color>
+    <color name="yellow_100">#FFF9C4</color>
+    <color name="pink_100">#F8BBD0</color>
+    <color name="blue_200">#90CAF9</color>
+    <color name="green_700">#00C853</color>
+
 </resources>

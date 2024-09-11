@@ -1,6 +1,6 @@
 package com.example.project.interfaces;
 
-import com.example.project.Managment.Garden;
+import com.example.project.Management.Garden;
 
 public interface GardenCallback {
     void onGardenClick(Garden garden);

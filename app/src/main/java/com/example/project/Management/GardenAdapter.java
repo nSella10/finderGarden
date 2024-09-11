@@ -1,4 +1,4 @@
-package com.example.project.Managment;
+package com.example.project.Management;
 
 import android.annotation.SuppressLint;
 import android.location.Location;
@@ -18,14 +18,14 @@ import java.util.Locale;
 
 public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenViewHolder> {
 
-    private List<Garden> gardenList;
+    private final List<Garden> GARDEN_LIST;
     private GardenCallback gardenCallback;
     private double userLatitude, userLongitude;
 
 
 
     public GardenAdapter(List<Garden> gardenList) {
-        this.gardenList = gardenList;
+        this.GARDEN_LIST = gardenList;
     }
 
     public void setGardenCallback(GardenCallback gardenCallback) {
@@ -50,7 +50,7 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
 
     @SuppressLint("SetTextI18n")
     public void onBindViewHolder(@NonNull GardenViewHolder holder, int position) {
-        Garden garden = gardenList.get(position);
+        Garden garden = GARDEN_LIST.get(position);
 
         holder.gardenName.setText(garden.getName());
 
@@ -97,7 +97,7 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
 
     @Override
     public int getItemCount() {
-        return gardenList == null ? 0 : gardenList.size();
+        return GARDEN_LIST == null ? 0 : GARDEN_LIST.size();
     }
 
 
@@ -124,7 +124,7 @@ public class GardenAdapter extends RecyclerView.Adapter<GardenAdapter.GardenView
         }
 
         private Garden getItem(int position) {
-            return gardenList.get(position);
+            return GARDEN_LIST.get(position);
         }
     }
 }

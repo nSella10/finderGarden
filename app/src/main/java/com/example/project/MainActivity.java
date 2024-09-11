@@ -1,5 +1,4 @@
 package com.example.project;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
@@ -12,10 +11,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -24,8 +23,10 @@ import com.example.project.Data.AddGardenActivity;
 import com.example.project.Data.FilterActivity;
 import com.example.project.Data.ListActivity;
 import com.example.project.Data.SavesActivity;
-import com.example.project.Managment.Garden;
+import com.example.project.Management.Garden;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
+
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -42,26 +43,30 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final int FILTER_REQUEST_CODE = 1;
+    private final static int REQUEST_CODE = 100;
+
     private MaterialButton main_BTN_addGarden;
     private TextInputEditText main_SEARCH_garden;
     private MaterialButton main_BTN_findMyLocation;
     private MaterialButton main_IMG_saves;
     private MaterialButton main_IMG_filter;
     private MaterialButton main_IMG_list;
+    private MaterialButton header_action;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
     private GoogleMap mMap;
-    private List<Garden> gardenList = new ArrayList<>();
+    private final List<Garden> GARDEN_LIST = new ArrayList<>();
     private double latitude;
     private double longitude;
-    private final static int REQUEST_CODE = 100;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
+    public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
         fetchGardensFromFirebase();
     }
@@ -98,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     mMap.clear();  // Clear any existing markers
 
                     LatLng firstGardenLocation = null;
-                    gardenList.clear();  // Clear garden list
+                    GARDEN_LIST.clear();  // Clear garden list
                     for (DataSnapshot gardenSnapshot : dataSnapshot.getChildren()) {
                         Garden garden = gardenSnapshot.getValue(Garden.class);
                         if (garden != null) {
-                            gardenList.add(garden);
+                            GARDEN_LIST.add(garden);
                             LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
 
                             mMap.addMarker(new MarkerOptions()
@@ -134,42 +139,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private BitmapDescriptor
     BitmapFromVector(Context context, int vectorResId)
     {
-        // below line is use to generate a drawable.
-        Drawable vectorDrawable = ContextCompat.getDrawable(
-                context, vectorResId);
 
-        // below line is use to set bounds to our vector
-        // drawable.
-        vectorDrawable.setBounds(
-                0, 0, vectorDrawable.getIntrinsicWidth(),
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        assert vectorDrawable != null;
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight());
-
-        // below line is use to create a bitmap for our
-        // drawable which we have added.
-        Bitmap bitmap = Bitmap.createBitmap(
-                vectorDrawable.getIntrinsicWidth(),
+        Bitmap bitmap = Bitmap.createBitmap
+                (vectorDrawable.getIntrinsicWidth(),
                 vectorDrawable.getIntrinsicHeight(),
                 Bitmap.Config.ARGB_8888);
-
-        // below line is use to add bitmap in our canvas.
         Canvas canvas = new Canvas(bitmap);
-
-        // below line is use to draw our
-        // vector drawable in canvas.
         vectorDrawable.draw(canvas);
-
-        // after generating our bitmap we are returning our
-        // bitmap.
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-//    private BitmapDescriptor BitmapFromVector(Context applicationContext, int pin) {
-//    }
+
 
 
     private void initView() {
         main_SEARCH_garden.setOnClickListener(v -> {
-            String query = main_SEARCH_garden.getText().toString().trim();
+            String query = Objects.requireNonNull(main_SEARCH_garden.getText()).toString().trim();
             if (!query.isEmpty()) {
                 searchGarden(query);  // Trigger search when search button is clicked
             } else {
@@ -186,11 +175,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //click to add garden
         main_BTN_addGarden.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AddGardenActivity.class);
             startActivity(intent);
         });
 
+
+        //click our location
         main_BTN_findMyLocation.setOnClickListener(v -> getLastLocation());
 
         main_IMG_saves.setOnClickListener(v -> {
@@ -198,19 +190,54 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             startActivity(intent);
         });
 
+        //click to the filter
         main_IMG_filter.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, FilterActivity.class);
             startActivityForResult(intent, FILTER_REQUEST_CODE);
         });
 
+        //click to the garden list
         main_IMG_list.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, ListActivity.class);
             startActivity(intent);
         });
+
+        //click for sign out
+        header_action.setOnClickListener(v -> showSignOutPopup());
     }
 
+    private void showSignOutPopup() {
+        // Create an AlertDialog for confirmation
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Sign Out");
+        builder.setMessage("Are you sure you want to sign out?");
+
+        // Sign Out button
+        builder.setPositiveButton("Sign Out", (dialog, which) -> signOutUser());
+        // Cancel button
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        // Show the dialog
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
+
+
+    private void signOutUser() {
+        AuthUI.getInstance().signOut(this).addOnCompleteListener(task -> {
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();  // Close MainActivity after sign-out
+        });
+    }
+
+
     private void searchGarden(String query) {
-        for (Garden garden : gardenList) {
+        for (Garden garden : GARDEN_LIST) {
             if (garden.getName().equalsIgnoreCase(query)) {
                 // Move the camera to the selected garden
                 LatLng gardenLocation = new LatLng(garden.getLatitude(), garden.getLongitude());
@@ -226,7 +253,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // Hide the keyboard after search
                 hideKeyboard();
 
-                // Clear focus from the search bar to prevent keyboard from reappearing
                 main_SEARCH_garden.clearFocus();
 
                 return;
@@ -275,19 +301,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         Log.d("FilterDebug", "Starting filter process...");
 
-        for (Garden garden : gardenList) {
-            // Step 1: Calculate the distance between the user and the garden
+        for (Garden garden : GARDEN_LIST) {
             double gardenDistance = calculateDistance(garden.getLatitude(), garden.getLongitude());
 
-            // Step 2: Check if the garden matches the distance and rating filters
             if (gardenDistance <= distance && garden.getRating() >= rating) {
-                // Step 3: Get the garden's facilities safely, default to an empty list if null
                 List<String> facilities = garden.getFacilities() != null ? garden.getFacilities() : new ArrayList<>();
 
                 // Log the facilities for debugging
                 Log.d("GardenFacilities", "Garden: " + garden.getName() + ", Facilities: " + facilities);
 
-                // Step 4: Check if at least one selected facility matches the garden's facilities
                 boolean matchFacilities = false;
 
                 List<String> selectedFacilities = new ArrayList<>();
@@ -359,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         main_IMG_saves = findViewById(R.id.main_IMG_saves);
         main_IMG_filter = findViewById(R.id.main_IMG_filter);
         main_IMG_list = findViewById(R.id.main_IMG_list);
+        header_action = findViewById(R.id.header_action);
     }
 
     private void getLastLocation() {
@@ -389,7 +412,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();

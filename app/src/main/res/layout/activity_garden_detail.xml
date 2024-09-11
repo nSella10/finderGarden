@@ -1,53 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/ic_launcher_background"
     android:padding="16dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/garden_detail_image"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:scaleType="centerCrop"
-        android:layout_alignParentTop="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:contentDescription="Selected Image"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
 
-    <com.google.android.material.textview.MaterialTextView
-        android:id="@+id/garden_detail_name"
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/update_image_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Change Image"
         android:layout_below="@id/garden_detail_image"
-        android:layout_marginTop="16dp"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:text="Garden Name" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="?attr/colorPrimary"
+        android:textColor="@android:color/white"
+        android:enabled="false"
+        />
 
+    <!-- Garden Name TextInputLayout -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/garden_input_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/update_image_button"
+        android:layout_marginTop="16dp"
+        tools:ignore="InvalidId">
+
+        <!-- Garden Name EditText -->
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/garden_detail_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:textSize="18sp"
+            android:enabled="false"
+            android:text="Garden Name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    &lt;!&ndash; Edit Name Button (next to garden name) &ndash;&gt;-->
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/edit_detail_name"-->
+<!--        android:layout_width="26dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@id/update_image_button"-->
+<!--        android:layout_alignTop="@id/garden_input_field"-->
+<!--        android:layout_alignParentEnd="true"-->
+<!--        android:layout_marginStart="8dp"-->
+<!--        android:layout_marginLeft="8dp"-->
+<!--        android:layout_marginEnd="28dp"-->
+<!--        android:layout_marginRight="8dp"-->
+<!--        android:backgroundTint="?attr/colorPrimary"-->
+<!--        android:contentDescription="Edit Name"-->
+<!--        android:iconTint="@android:color/white"-->
+<!--        android:textColor="@android:color/white"-->
+<!--        app:icon="@drawable/ic_edit"-->
+<!--        tools:ignore="NotSibling" />-->
+
+    <!-- Facilities Text -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/garden_detail_facilities"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/garden_detail_name"
-        android:layout_marginTop="8dp"
+        android:layout_below="@id/garden_input_field"
+        android:layout_marginTop="16dp"
         android:textSize="18sp"
-        android:text="Facilities" />
+        android:textColor="@android:color/black"
+        android:text="Facilities"
+        tools:ignore="NotSibling" />
 
+    <!-- Distance Text -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/garden_detail_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/garden_detail_facilities"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
         android:textSize="18sp"
+        android:textColor="@android:color/black"
         android:text="Distance" />
 
+    <!-- Description Text -->
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/garden_detail_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/garden_detail_distance"
         android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
         android:textSize="16sp"
+        android:textColor="@android:color/black"
         android:text="Description" />
 
+    <!-- Rating Bar -->
     <androidx.appcompat.widget.AppCompatRatingBar
         android:id="@+id/garden_detail_rating"
         android:layout_width="wrap_content"
@@ -55,8 +116,10 @@
         android:layout_below="@id/garden_detail_description"
         android:numStars="5"
         android:stepSize="0.5"
+        android:progressTint="@color/black"
         android:layout_marginTop="16dp" />
 
+    <!-- Edit Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"
@@ -68,6 +131,7 @@
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="@android:color/white" />
 
+    <!-- Save Button -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/save_button"
         android:layout_width="wrap_content"
@@ -79,6 +143,6 @@
         android:backgroundTint="?attr/colorPrimary"
         android:textColor="@android:color/white" />
 
-
 </RelativeLayout>
+
 
