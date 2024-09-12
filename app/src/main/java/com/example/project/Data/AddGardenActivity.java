@@ -138,6 +138,9 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
 
     }
 
+
+
+
     private void openCamera() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -150,7 +153,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
             }
 
             if (photoFile != null) {
-                imageUri = FileProvider.getUriForFile(this, "com.example.project.file provider", photoFile);
+                imageUri = FileProvider.getUriForFile(this, "com.example.project.Provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -175,16 +178,16 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
 
 
 
-    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+    private Bitmap resizeBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float bitmapRatio = (float) width / (float) height;
 
         if (bitmapRatio > 1) {
-            width = maxWidth;
+            width = 600;
             height = (int) (width / bitmapRatio);
         } else {
-            height = maxHeight;
+            height = 400;
             width = (int) (height * bitmapRatio);
         }
 
@@ -192,9 +195,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
     }
 
 
-    //    private Bitmap resizeBitmap(Bitmap bitmap) {
-//        return Bitmap.createScaledBitmap(bitmap, 600, 400, true);
-//    }
+
     private Bitmap handleImageOrientation(File imageFile, Bitmap bitmap) throws IOException {
         ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
         int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED);
@@ -249,7 +250,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
                 try {
                     // Check and fix image orientation before displaying it
                     bitmap = handleImageOrientation(imageFile, bitmap);
-                    bitmap = resizeBitmap(bitmap, 600, 400);  // Resize the bitmap if necessary
+                    bitmap = resizeBitmap(bitmap);  // Resize the bitmap if necessary
                     addGarden_IMG_selected.setImageBitmap(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -408,6 +409,9 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
             mMap.addMarker(new MarkerOptions().position(userLocation).title("You are here"));
         }
     }
+
+
+
 
 
 }

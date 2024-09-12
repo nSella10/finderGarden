@@ -78,13 +78,14 @@
         <!-- FileProvider configuration for handling captured images -->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.project.file provider"
+            android:authorities="com.example.project.Provider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
+
 
         <!-- API Key for Google Maps -->
         <meta-data

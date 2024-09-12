@@ -47,7 +47,7 @@ public class GardenDetailActivity extends AppCompatActivity {
     private TextInputEditText garden_detail_name;
     private MaterialTextView garden_detail_facilities;
     private MaterialTextView garden_detail_distance;
-    private MaterialTextView garden_detail_description;
+    private TextInputEditText  garden_detail_description;
     private AppCompatRatingBar garden_detail_rating;
     private MaterialButton edit_button;
     private MaterialButton save_button;
@@ -135,7 +135,7 @@ public class GardenDetailActivity extends AppCompatActivity {
             }
 
             if (photoFile != null) {
-                imageUri = FileProvider.getUriForFile(this, "com.example.project.file provider", photoFile);
+                imageUri = FileProvider.getUriForFile(this, "com.example.project.Provider", photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
@@ -158,16 +158,16 @@ public class GardenDetailActivity extends AppCompatActivity {
         return image;
     }
 
-    private Bitmap resizeBitmap(Bitmap bitmap, int maxWidth, int maxHeight) {
+    private Bitmap resizeBitmap(Bitmap bitmap) {
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();
         float bitmapRatio = (float) width / (float) height;
 
         if (bitmapRatio > 1) {
-            width = maxWidth;
+            width = 600;
             height = (int) (width / bitmapRatio);
         } else {
-            height = maxHeight;
+            height = 400;
             width = (int) (height * bitmapRatio);
         }
 
@@ -207,7 +207,7 @@ public class GardenDetailActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath);
                 try {
                     bitmap = handleImageOrientation(imageFile, bitmap);
-                    bitmap = resizeBitmap(bitmap, 600, 400);
+                    bitmap = resizeBitmap(bitmap);
                     garden_detail_image.setImageBitmap(bitmap);
                     isImageChanged = true; // Mark image as changed
                 } catch (IOException e) {
@@ -226,6 +226,7 @@ public class GardenDetailActivity extends AppCompatActivity {
 
     private void enableEditing(boolean enable) {
         garden_detail_name.setEnabled(enable);
+        garden_detail_description.setEnabled(enable);
         garden_detail_rating.setIsIndicator(!enable);
         update_image_button.setEnabled(enable);
 
@@ -274,6 +275,7 @@ public class GardenDetailActivity extends AppCompatActivity {
 
     private void saveUpdatedGardenToFirebase() {
         String updatedName = garden_detail_name.getText().toString().trim();
+        String updatedDescription = garden_detail_description.getText().toString().trim();
         float updatedRating = garden_detail_rating.getRating();
 
         if (updatedName.isEmpty()) {
@@ -286,6 +288,7 @@ public class GardenDetailActivity extends AppCompatActivity {
         DatabaseReference gardenRef = FirebaseDatabase.getInstance().getReference("Garden").child(gardenId);
 
         gardenRef.child("name").setValue(updatedName);
+        gardenRef.child("description").setValue(updatedDescription);
         gardenRef.child("rating").setValue(updatedRating);
 
         if (isImageChanged && imageUri != null) {
