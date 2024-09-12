@@ -23,12 +23,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private final ActivityResultLauncher<Intent> signInLauncher = registerForActivityResult(
             new FirebaseAuthUIActivityResultContract(),
-            new ActivityResultCallback<FirebaseAuthUIAuthenticationResult>() {
-                @Override
-                public void onActivityResult(FirebaseAuthUIAuthenticationResult result) {
-                    onSignInResult(result);
-                }
-            }
+            result -> onSignInResult(result)
     );
 
     @Override
@@ -66,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
         IdpResponse response = result.getIdpResponse();
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
-            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
             transactToSplashActivity();
         } else {
             // Handle failure (user canceled or error occurred)
@@ -83,12 +77,5 @@ public class LoginActivity extends AppCompatActivity {
         finish(); // Close LoginActivity
     }
 
-    private void signOut() {
-        AuthUI.getInstance()
-                .signOut(this)
-                .addOnCompleteListener(task -> {
-                    // After sign-out, you may want to return to the login screen
-                    signIn(); // Prompt the user to sign in again
-                });
-    }
+
 }

@@ -1,6 +1,8 @@
+
 package com.example.project.Management;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatRatingBar;
 import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.project.R;
@@ -34,7 +38,10 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -43,15 +50,23 @@ public class GardenDetailActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 1;
     private static final int REQUEST_IMAGE_PICK = 2;
     private static final String TAG = "GardenDetailActivity";
+
+    // List of facilities and selected facilities
+    private final List<String> FACILITIES_LIST = new ArrayList<>();
+    private final List<String> SELECTED_FACILITIES = new ArrayList<>();
+
     private ShapeableImageView garden_detail_image;
     private TextInputEditText garden_detail_name;
-    private MaterialTextView garden_detail_facilities;
+    private RecyclerView garden_facilities_recycler;
     private MaterialTextView garden_detail_distance;
-    private TextInputEditText  garden_detail_description;
+    private TextInputEditText garden_detail_description;
     private AppCompatRatingBar garden_detail_rating;
     private MaterialButton edit_button;
     private MaterialButton save_button;
     private MaterialButton update_image_button;
+    private MaterialButton add_facility_button;
+
+    private FacilitiesAdapter facilitiesAdapter;
     private String gardenId;
     private Uri imageUri;
     private String currentPhotoPath;
@@ -64,41 +79,15 @@ public class GardenDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_garden_detail);
 
         findView();
-
         garden_detail_rating.setIsIndicator(true);
 
-        // Get the garden details from the intent
+        // Setup the RecyclerView with an adapter
+        setupFacilitiesRecyclerView();
+
+        // Load garden details from intent
         Intent intent = getIntent();
         if (intent != null) {
-            gardenId = intent.getStringExtra("garden_id");
-            String name = intent.getStringExtra("garden_name");
-            String description = intent.getStringExtra("garden_description");
-            String[] facilitiesArray = intent.getStringArrayExtra("garden_facilities");
-            String distance = intent.getStringExtra("garden_distance");
-            String imageUrl = intent.getStringExtra("garden_image_url");
-            float rating = intent.getFloatExtra("garden_rating", 0f);
-
-            // Set the data to views
-            garden_detail_name.setText(name != null ? name : "No name available");
-            garden_detail_description.setText(description != null ? description : "No description available");
-            garden_detail_distance.setText(distance != null ? distance : "Location not available");
-
-            // Handle null facilities array safely
-            if (facilitiesArray != null) {
-                String facilities = String.join(", ", facilitiesArray);
-                garden_detail_facilities.setText(facilities);
-            } else {
-                garden_detail_facilities.setText("No facilities listed");
-            }
-
-            garden_detail_rating.setRating(rating);
-
-            // Load the image using Glide
-            if (imageUrl != null && !imageUrl.isEmpty()) {
-                Glide.with(this).load(imageUrl).into(garden_detail_image);
-            } else {
-                garden_detail_image.setImageResource(R.drawable.unavailable_photo);
-            }
+            loadGardenDetailsFromIntent(intent);
         }
 
         // Button to capture or pick image
@@ -108,19 +97,88 @@ public class GardenDetailActivity extends AppCompatActivity {
 
         save_button.setVisibility(View.INVISIBLE);
         save_button.setOnClickListener(v -> saveUpdatedGardenToFirebase());
+
+        // Add new facility
+        add_facility_button.setOnClickListener(v -> showAddFacilityDialog());
+    }
+
+    private void showAddFacilityDialog() {
+        String[] availableFacilities = {"carrousel", "fitness facilities", "kiosk", "benches", "slide", "swings", "fountain", "lawn", "facilities for 0-3", "facilities for 4-8"};
+        boolean[] selectedFacilities = new boolean[availableFacilities.length];
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Facilities");
+
+        builder.setMultiChoiceItems(availableFacilities, selectedFacilities, (dialog, which, isChecked) -> selectedFacilities[which] = isChecked);
+
+        builder.setPositiveButton("Add", (dialog, which) -> {
+            for (int i = 0; i < availableFacilities.length; i++) {
+                if (selectedFacilities[i] && !FACILITIES_LIST.contains(availableFacilities[i])) {
+                    FACILITIES_LIST.add(availableFacilities[i]);
+                    SELECTED_FACILITIES.add(availableFacilities[i]);
+                }
+            }
+            facilitiesAdapter.updateFacilities(FACILITIES_LIST);
+        });
+
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+    private void setupFacilitiesRecyclerView() {
+        garden_facilities_recycler.setLayoutManager(new GridLayoutManager(this, 2));
+
+        // Create an instance of FacilitiesAdapter
+        facilitiesAdapter = new FacilitiesAdapter(
+                this, FACILITIES_LIST, SELECTED_FACILITIES, false
+        );
+        garden_facilities_recycler.setAdapter(facilitiesAdapter);
     }
 
     private void findView() {
         // Initialize views
         garden_detail_image = findViewById(R.id.garden_detail_image);
         garden_detail_name = findViewById(R.id.garden_detail_name);
-        garden_detail_facilities = findViewById(R.id.garden_detail_facilities);
+        garden_facilities_recycler = findViewById(R.id.garden_facilities_recycler);
         garden_detail_distance = findViewById(R.id.garden_detail_distance);
         garden_detail_description = findViewById(R.id.garden_detail_description);
         garden_detail_rating = findViewById(R.id.garden_detail_rating);
         edit_button = findViewById(R.id.edit_button);
         save_button = findViewById(R.id.save_button);
         update_image_button = findViewById(R.id.update_image_button);
+        add_facility_button = findViewById(R.id.add_facility_button);
+    }
+
+    private void loadGardenDetailsFromIntent(Intent intent) {
+        gardenId = intent.getStringExtra("garden_id");
+        String name = intent.getStringExtra("garden_name");
+        String description = intent.getStringExtra("garden_description");
+        String[] facilitiesArray = intent.getStringArrayExtra("garden_facilities");
+        String distance = intent.getStringExtra("garden_distance");
+        String imageUrl = intent.getStringExtra("garden_image_url");
+        float rating = intent.getFloatExtra("garden_rating", 0f);
+
+        // Set the data to views
+        garden_detail_name.setText(name != null ? name : "No name available");
+        garden_detail_description.setText(description != null ? description : "No description available");
+        garden_detail_distance.setText(distance != null ? distance : "Location not available");
+
+        // Handle null facilities array safely and update the RecyclerView
+        if (facilitiesArray != null) {
+            FacilitiesAdapter adapter = (FacilitiesAdapter) garden_facilities_recycler.getAdapter();
+            if (adapter != null) {
+                adapter.updateFacilities(Arrays.asList(facilitiesArray));  // Update UI with facilities from Firebase
+            }
+        }
+
+        garden_detail_rating.setRating(rating);
+
+        // Load the image using Glide
+        if (imageUrl != null && !imageUrl.isEmpty()) {
+            Glide.with(this).load(imageUrl).into(garden_detail_image);
+        } else {
+            garden_detail_image.setImageResource(R.drawable.unavailable_photo);
+        }
     }
 
     private void openCamera() {
@@ -147,11 +205,7 @@ public class GardenDetailActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);  // This stores it in /files/Pictures
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save the file path for later use
         currentPhotoPath = image.getAbsolutePath();
@@ -198,6 +252,7 @@ public class GardenDetailActivity extends AppCompatActivity {
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -230,6 +285,13 @@ public class GardenDetailActivity extends AppCompatActivity {
         garden_detail_rating.setIsIndicator(!enable);
         update_image_button.setEnabled(enable);
 
+        // Enable or disable facilities edit ability
+        if (facilitiesAdapter != null) {
+            facilitiesAdapter.setEditable(enable);
+        }
+
+        add_facility_button.setEnabled(enable);
+
         if (enable) {
             save_button.setVisibility(View.VISIBLE);
             edit_button.setVisibility(View.GONE);
@@ -237,11 +299,6 @@ public class GardenDetailActivity extends AppCompatActivity {
             edit_button.setVisibility(View.VISIBLE);
             save_button.setVisibility(View.GONE);
         }
-
-        edit_button.setOnClickListener(v -> enableEditing(true));
-        save_button.setOnClickListener(v -> {
-            saveUpdatedGardenToFirebase();
-        });
     }
 
     private void uploadImageAndSaveUri(DatabaseReference gardenRef) {
@@ -291,12 +348,17 @@ public class GardenDetailActivity extends AppCompatActivity {
         gardenRef.child("description").setValue(updatedDescription);
         gardenRef.child("rating").setValue(updatedRating);
 
+        // Save updated facilities
+        List<String> updatedFacilities = facilitiesAdapter.getSelectedFacilities();
+        gardenRef.child("facilities").setValue(new ArrayList<>(updatedFacilities));
+
         if (isImageChanged && imageUri != null) {
             uploadImageAndSaveUri(gardenRef);
         } else {
             finishUpdate();
         }
     }
+
 
     private void enableSaveButton(boolean enable) {
         save_button.setEnabled(enable);  // Completely disable or enable the button
@@ -309,4 +371,3 @@ public class GardenDetailActivity extends AppCompatActivity {
         enableSaveButton(true); // Re-enable the save button after the update completes
     }
 }
-

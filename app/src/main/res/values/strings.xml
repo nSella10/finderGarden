@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Garden Finder</string>
+    <string name="facility">Facility</string>
+    <string name="distance">Distance</string>
+    <string name="garden_description">Garden Description</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="facilities">Facilities</string>
+    <string name="garden_name">Garden Name</string>
+    <string name="change_image">Change Image</string>
+    <string name="selected_image">Selected Image</string>
 </resources>

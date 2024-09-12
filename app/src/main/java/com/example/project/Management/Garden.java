@@ -3,6 +3,7 @@ package com.example.project.Management;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.Set;
 
 public class Garden {
     private String id;
@@ -21,7 +22,7 @@ public class Garden {
     public Garden() {
     }
 
-    public Garden(String id,String name, double latitude, double longitude, double rating, String imageUrl, String description, List<String> facilities) {
+    public Garden(String id,String name, double latitude, double longitude, double rating, String imageUrl, String description,  List<String> facilities) {
          this.id = id;
         this.name = name;
         this.latitude = latitude;

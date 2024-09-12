@@ -103,7 +103,7 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
         findViews();
         initViews();
 
-        FacilitiesAdapter facilitiesAdapter = new FacilitiesAdapter(this, FACILITIES_LIST, SELECTED_FACILITIES);
+        FacilitiesAdapter facilitiesAdapter = new FacilitiesAdapter(this, FACILITIES_LIST, SELECTED_FACILITIES,true);
         recyclerFacilities.setLayoutManager(new GridLayoutManager(this, 2));  // Grid layout with 2 columns
         recyclerFacilities.setAdapter(facilitiesAdapter);
 
@@ -137,8 +137,6 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
         addGarden_BTN.setOnClickListener(v -> saveGardenToFirebase());
 
     }
-
-
 
 
     private void openCamera() {
@@ -409,10 +407,6 @@ public class AddGardenActivity extends AppCompatActivity implements OnMapReadyCa
             mMap.addMarker(new MarkerOptions().position(userLocation).title("You are here"));
         }
     }
-
-
-
-
 
 }
 

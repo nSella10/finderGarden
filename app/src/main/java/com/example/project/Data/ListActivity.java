@@ -1,6 +1,7 @@
 package com.example.project.Data;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -18,6 +19,7 @@ import com.example.project.R;
 import com.example.project.interfaces.GardenCallback;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,6 +33,7 @@ public class ListActivity extends AppCompatActivity {
 
     private GardenAdapter gardenAdapter;
     private List<Garden> gardenList;
+    private MaterialButton delete_garden_button;
     private FusedLocationProviderClient fusedLocationClient;
     private double userLatitude, userLongitude;
     private boolean userLocationAvailable = false;  // Add this flag to check if user location is available
@@ -43,8 +46,13 @@ public class ListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.garden_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        delete_garden_button = findViewById(R.id.delete_garden_button);
+
         gardenList = new ArrayList<>();
         gardenAdapter = new GardenAdapter(gardenList);
+        recyclerView.setAdapter(gardenAdapter);
+
+        delete_garden_button.setOnClickListener(v -> showDeleteGardenDialog());
 
         // Initialize garden callback
         gardenAdapter.setGardenCallback(new GardenCallback() {
@@ -85,6 +93,69 @@ public class ListActivity extends AppCompatActivity {
 
         loadDataFromFirebase();
     }
+
+
+
+    private void showDeleteGardenDialog() {
+        if (gardenList.isEmpty()) {
+            // Show a message if no gardens are available to delete
+            showMessage("No gardens available for deletion.");
+            return;
+        }
+
+        String[] gardenNames = new String[gardenList.size()];
+        for (int i = 0; i < gardenList.size(); i++) {
+            gardenNames[i] = gardenList.get(i).getName();
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select Garden to Delete");
+
+        builder.setItems(gardenNames, (dialog, which) -> {
+            // Get the selected garden
+            Garden selectedGarden = gardenList.get(which);
+            confirmDelete(selectedGarden);  // Confirm before deleting
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    private void confirmDelete(Garden selectedGarden) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Confirm Delete");
+        builder.setMessage("Are you sure you want to delete " + selectedGarden.getName() + "?");
+
+        builder.setPositiveButton("Delete", (dialog, which) -> {
+            // Delete from Firebase
+            deleteGardenFromFirebase(selectedGarden);
+        });
+
+        builder.setNegativeButton("Cancel", null);
+        builder.show();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void deleteGardenFromFirebase(Garden garden) {
+        DatabaseReference gardenRef = FirebaseDatabase.getInstance().getReference("Garden").child(garden.getId());
+        gardenRef.removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Remove from the list and notify the adapter
+                gardenList.remove(garden);
+                gardenAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+
+    private void showMessage(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(message);
+        builder.setPositiveButton("OK", null);
+        builder.show();
+    }
+    
+
 
     private void getUserLocation() {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -139,11 +210,10 @@ public class ListActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                // Handle possible errors
+                // pass
             }
         });
     }
-
 
 
     private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {

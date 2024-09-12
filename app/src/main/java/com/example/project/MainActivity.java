@@ -307,6 +307,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (gardenDistance <= distance && garden.getRating() >= rating) {
                 List<String> facilities = garden.getFacilities() != null ? garden.getFacilities() : new ArrayList<>();
 
+
                 // Log the facilities for debugging
                 Log.d("GardenFacilities", "Garden: " + garden.getName() + ", Facilities: " + facilities);
 
